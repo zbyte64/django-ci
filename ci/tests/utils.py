@@ -1,7 +1,7 @@
 from os import rmdir
 from shutil import rmtree
 from tempfile import mkdtemp
-from vcs.nodes import FileNode
+from vcs.nodes import FileNode, RemovedFileNode
 from vcs.backends import get_repo
 from django.test import TestCase
 from ci.models import Project
@@ -33,10 +33,12 @@ class BaseTestCase(TestCase):
         for commit in commits:
             commit = commit.copy()
             stage = self.repo.in_memory_changeset
-            for name, content in commit.pop('added', {}).items():
+            for name, content in commit.pop('added', {}).iteritems():
                 stage.add(FileNode(name, content))
-            for name, content in commit.pop('changed', {}).items():
+            for name, content in commit.pop('changed', {}).iteritems():
                 stage.change(FileNode(name, content))
+            for name in commit.pop('removed', []):
+                stage.remove(RemovedFileNode(name))
             commit.setdefault('author', "Tim Tester")
             commit.setdefault('message', "dummy message\n\nwith multiple lines")
             stage.commit(**commit)
