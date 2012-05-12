@@ -7,4 +7,4 @@ class ToxBuilder(CommandBasedBuilder):
 
 class DefaultPlugin(Plugin):
     def get_builders(self):
-        return {'shell': ToxBuilder}
+        return {'tox': ToxBuilder}

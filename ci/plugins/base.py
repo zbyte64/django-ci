@@ -50,17 +50,7 @@ class Builder(object):
     def setup_build(self):
         self.repo_path = tempfile.mkdtemp()
         os.rmdir(self.repo_path)
-        Repository = self.build.configuration.project.get_vcs_backend()
-        kwargs = {
-            'create':True,
-            'src_url':self.build.configuration.project.repo_uri,
-            'update_after_clone':True,}
-        if getattr(Repository, 'supports_private_repositories', False):
-            kwargs['private_key_data'] = self.build.configuration.project.private_key
-        self.repo = Repository(
-            self.repo_path,
-            **kwargs
-        )
+        self.repo = self.build.configuration.project.get_vcs_repository(repo_path=self.repo_path, update_after_clone=True, create=True)
         self.repo.workdir.checkout_branch(self.build.commit.branch)
         commit = self.build.commit
         if commit.vcs_id is None:
@@ -68,9 +58,10 @@ class Builder(object):
             commit.vcs_id = changeset.raw_id
             commit.short_message = changeset.message.splitlines()[0]
             commit.save()
+        assert os.path.exists(self.repo_path)
 
     def teardown_build(self):
-        shutil.rmtree(self.repo_path)
+        shutil.rmtree(self.repo_path, ignore_errors=True)
 
     def format_exception(self):
         return '\n\n' + '\n\n'.join([
