@@ -1,6 +1,7 @@
 import pep8
 import sys
 import unittest
+import shutil
 
 from coverage import coverage, misc
 from distutils import log
@@ -169,5 +170,8 @@ class SetupTestSuite(unittest.TestSuite):
         self.test_runner.teardown_test_environment()
         self.coverage_report()
         self.pep8_report()
+        from django.conf import settings
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        print 'removed', settings.MEDIA_ROOT
         return result
 
