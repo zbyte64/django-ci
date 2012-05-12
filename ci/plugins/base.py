@@ -51,14 +51,16 @@ class Builder(object):
         self.repo_path = tempfile.mkdtemp()
         os.rmdir(self.repo_path)
         Repository = self.build.configuration.project.get_vcs_backend()
+        kwargs = {
+            'create':True,
+            'src_url':self.build.configuration.project.repo_uri,
+            'update_after_clone':True,}
+        if getattr(Repository, 'supports_private_repositories', False):
+            kwargs['private_key_data'] = self.build.configuration.project.private_key
         self.repo = Repository(
             self.repo_path,
-            create=True,
-            src_url=self.build.configuration.project.repo_uri,
-            update_after_clone=True
+            **kwargs
         )
-        if self.build.configuration.project.private_key and hasattr(self.repo, 'set_private_key'):
-            self.repo.set_private_key(self.build.configuration.project.private_key)
         self.repo.workdir.checkout_branch(self.build.commit.branch)
         commit = self.build.commit
         if commit.vcs_id is None:
