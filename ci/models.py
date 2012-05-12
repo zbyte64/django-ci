@@ -43,6 +43,17 @@ class Project(models.Model):
     def get_vcs_backend(self):
         return vcs.get_backend(self.vcs_type)
 
+    def get_vcs_repository(self, **kwargs):
+        repository_class = self.get_vcs_backend()
+        repository_kwargs = {'src_url':self.repo_uri,}
+        
+        if getattr(repository_class, 'supports_private_repositories', False):
+            repository_kwargs['private_key_data'] = self.private_key
+        
+        repository_kwargs.update(kwargs)
+        return repository_class (
+            **repository_kwargs
+        )
     # XXX too many similar names
 
     def get_branch_order(self):

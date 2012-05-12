@@ -4,3 +4,5 @@ django-kombu
 vcs>=0.2.1
 BeautifulSoup
 dulwich
+pyyaml
+tox
