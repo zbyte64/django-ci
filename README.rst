@@ -9,7 +9,7 @@ django-ci is a work-in-progress continuous integration app for Django 1.4.
 Requirements
 ------------
 * Django >= 1.4
-* vcs >= 2.0.1
+* vcs >= 0.2.1
 * django-celery >= 2.4.0
 * dulwich for Git and/or Mercurial
 * BeautifulSoup for testing
