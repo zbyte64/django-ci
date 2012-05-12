@@ -26,6 +26,8 @@ class Project(models.Model):
     vcs_type = models.CharField('VCS type', choices=VCS_CHOICES, max_length=10)
     repo_uri = models.CharField('Repository URI', max_length=500)
     important_branches = StringListField(blank=True, null=True, max_length=500)
+    public_key = models.TextField(blank=True)
+    private_key = models.TextField(blank=True, help_text='Needed for private repositories') #consider encrypting for a false sense of security
 
     @property
     def builds(self):
