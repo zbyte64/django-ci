@@ -330,7 +330,6 @@ class ProjectDetailsTests(TestCase):
             ('!done2', [('tests', 'failed'), ('docs', 'pending')])
         ]})
 
-
 class CommitDetailsTests(TestCase):
     url = '/ci/testproject/builds/1/'
 

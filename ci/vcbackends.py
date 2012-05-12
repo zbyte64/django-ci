@@ -10,7 +10,15 @@ from vcs.exceptions import RepositoryError
 import tempfile
 
 class PrivateGitRepository(GitRepository):
-    private_key_path = None
+    supports_private_repositories = True
+    
+    def __init__(self, *args, **kwargs):
+        private_key_data = kwargs.pop('private_key_data', None)
+        if private_key_data:
+            self.set_private_key(private_key_data)
+        else:
+            self.private_key_path = None
+        super(PrivateGitRepository, self).__init__(*args, **kwargs)
     
     def set_private_key(self, payload):
         handle, path = tempfile.mkstemp()
